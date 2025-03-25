@@ -283,6 +283,11 @@
                         <h5>Números {% if resultado.tipo_ordenacao == 'mais' %}Mais{% else %}Menos{% endif %} Sorteados</h5>
                     </div>
                     <div class="card-body">
+                        <div class="text-center mb-3">
+                            <small class="text-muted">
+                                Total de jogos analisados: {{ resultado.total_jogos }}
+                            </small>
+                        </div>
                         <div class="numeros-grid">
                             {% for numero, frequencia in resultado.todos_numeros %}
                                 <div class="numero-item">
@@ -290,6 +295,11 @@
                                     {{ frequencia }} vezes
                                 </div>
                             {% endfor %}
+                        </div>
+                        <div class="mt-3 text-center">
+                            <small class="text-muted">
+                                Distribuição: {{ resultado.pares }} números pares e {{ resultado.impares }} números ímpares
+                            </small>
                         </div>
                     </div>
                 </div>

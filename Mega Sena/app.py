@@ -9,6 +9,7 @@ app = Flask(__name__)
 def ler_resultados():
     # Lista para armazenar todos os números lidos
     numeros = []
+    total_jogos = 0
     # Abre o arquivo de resultados em modo leitura com codificação UTF-8
     with open('resultados.txt', 'r', encoding='utf-8') as arquivo:
         # Itera sobre cada linha do arquivo
@@ -16,15 +17,17 @@ def ler_resultados():
             # Procura por padrões de números após um hífen
             match = re.search(r'-\s*([\d,]+)', linha)
             if match:
+                # Incrementa o contador de jogos
+                total_jogos += 1
                 # Extrai os números da linha e os separa por vírgula
                 numeros_linha = match.group(1).split(',')
                 # Adiciona os números à lista principal
                 numeros.extend(numeros_linha)
-    return numeros
+    return numeros, total_jogos
 
 def analisar_numeros(quantidade, tipo_ordenacao):
     # Lê todos os números do arquivo
-    numeros = ler_resultados()
+    numeros, total_jogos = ler_resultados()
     # Conta a frequência de cada número
     contagem = Counter(numeros)
     
@@ -35,10 +38,18 @@ def analisar_numeros(quantidade, tipo_ordenacao):
         # Ordena por frequência em ordem crescente (menos frequentes primeiro)
         numeros_ordenados = sorted(contagem.items(), key=lambda x: int(x[1]))
     
-    # Retorna um dicionário com os números ordenados e o tipo de ordenação
+    # Conta números pares e ímpares
+    numeros_selecionados = numeros_ordenados[:quantidade]
+    pares = sum(1 for num, _ in numeros_selecionados if int(num) % 2 == 0)
+    impares = quantidade - pares
+    
+    # Retorna um dicionário com os números ordenados, tipo de ordenação e contagem de pares/ímpares
     return {
-        'todos_numeros': numeros_ordenados[:quantidade],
-        'tipo_ordenacao': tipo_ordenacao
+        'todos_numeros': numeros_selecionados,
+        'tipo_ordenacao': tipo_ordenacao,
+        'pares': pares,
+        'impares': impares,
+        'total_jogos': total_jogos
     }
 
 # Rota principal da aplicação que aceita métodos GET e POST
