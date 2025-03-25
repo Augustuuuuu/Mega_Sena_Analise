@@ -1,10 +1,14 @@
 # Importação das bibliotecas necessárias
-from flask import Flask, render_template, request  # Flask para criar a aplicação web
+from flask import Flask, render_template, request, jsonify  # Flask para criar a aplicação web
 from collections import Counter  # Counter para contar frequência de números
 import re  # Expressões regulares para processamento de texto
+from ia_qa import MegaSenaQA  # Importa a classe de perguntas e respostas
 
 # Inicialização da aplicação Flask
 app = Flask(__name__)
+
+# Inicializa o sistema de perguntas e respostas
+qa_system = MegaSenaQA()
 
 def ler_resultados():
     # Lista para armazenar todos os números lidos
@@ -74,6 +78,15 @@ def index():
     
     # Renderiza o template index.html com o resultado
     return render_template('index.html', resultado=resultado)
+
+# Rota para processar perguntas via AJAX
+@app.route('/perguntar', methods=['POST'])
+def perguntar():
+    pergunta = request.form.get('pergunta', '')
+    if pergunta:
+        resposta = qa_system.responder_pergunta(pergunta)
+        return jsonify({'resposta': resposta})
+    return jsonify({'erro': 'Por favor, faça uma pergunta.'})
 
 # Verifica se o arquivo está sendo executado diretamente
 if __name__ == '__main__':
