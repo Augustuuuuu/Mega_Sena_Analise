@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise Mega Sena</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #37352f;
+            --secondary-color: #2eaadc;
+            --background-color: #ffffff;
+            --card-background: #ffffff;
+            --text-color: #37352f;
+            --border-radius: 3px;
+            --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --input-border: #e0e0e0;
+            --hover-color: #f5f5f5;
+        }
+
+        [data-bs-theme="dark"] {
+            --primary-color: #ffffff;
+            --secondary-color: #2eaadc;
+            --background-color: #191919;
+            --card-background: #2f2f2f;
+            --text-color: #ffffff;
+            --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            --input-border: #404040;
+            --hover-color: #3a3a3a;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .header {
+            text-align: left;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            right: 0;
+            top: 0;
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--hover-color);
+        }
+
+        .card {
+            background: var(--card-background);
+            border: 1px solid var(--input-border);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: var(--card-background);
+            color: var(--text-color);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--input-border);
+            font-weight: 500;
+        }
+
+        .card-header h5 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .form-control {
+            background-color: var(--card-background);
+            border: 1px solid var(--input-border);
+            color: var(--text-color);
+            border-radius: var(--border-radius);
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(46, 170, 220, 0.1);
+            background-color: var(--card-background);
+            color: var(--text-color);
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary:hover {
+            background-color: #2596be;
+            transform: translateY(-1px);
+        }
+
+        .btn-group {
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .btn-group .btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--input-border);
+            color: var(--text-color);
+            background: var(--card-background);
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            border-radius: var(--border-radius);
+        }
+
+        .btn-group .btn.active {
+            background-color: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
+        .btn-group .btn:hover {
+            background-color: var(--hover-color);
+        }
+
+        .numeros-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .numero-item {
+            background: var(--card-background);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            transition: all 0.2s;
+            border: 1px solid var(--input-border);
+        }
+
+        .numero-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: var(--hover-color);
+        }
+
+        .numero-item strong {
+            color: var(--text-color);
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .numero-item:nth-child(1) {
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            color: white;
+            border: none;
+        }
+
+        .numero-item:nth-child(2) {
+            background: linear-gradient(135deg, #c0c0c0, #a9a9a9);
+            color: white;
+            border: none;
+        }
+
+        .numero-item:nth-child(3) {
+            background: linear-gradient(135deg, #cd7f32, #b87333);
+            color: white;
+            border: none;
+        }
+
+        .alert {
+            border-radius: var(--border-radius);
+            border: none;
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        [data-bs-theme="dark"] .alert {
+            background-color: #7f1d1d;
+            color: #fecaca;
+        }
+
+        [data-bs-theme="dark"] .form-label {
+            color: var(--text-color);
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Análise dos Números da Mega Sena</h1>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Alternar tema">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-moon-stars" viewBox="0 0 16 16">
+                    <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+                    <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <form method="POST">
+                    <div class="btn-group" role="group">
+                        <input type="radio" class="btn-check" name="tipo_ordenacao" id="mais" value="mais" checked>
+                        <label class="btn" for="mais">Mais Sorteados</label>
+                        
+                        <input type="radio" class="btn-check" name="tipo_ordenacao" id="menos" value="menos">
+                        <label class="btn" for="menos">Menos Sorteados</label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="quantidade" class="form-label">Quantos números você deseja ver?</label>
+                        <input type="number" class="form-control" style="max-width: 200px;" 
+                               id="quantidade" name="quantidade" min="1" max="60" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Analisar</button>
+                </form>
+            </div>
+        </div>
+
+        {% if resultado %}
+            {% if resultado.erro %}
+                <div class="alert">{{ resultado.erro }}</div>
+            {% else %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Números {% if resultado.tipo_ordenacao == 'mais' %}Mais{% else %}Menos{% endif %} Sorteados</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="numeros-grid">
+                            {% for numero, frequencia in resultado.todos_numeros %}
+                                <div class="numero-item">
+                                    <strong>Número {{ numero }}</strong>
+                                    {{ frequencia }} vezes
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Função para salvar o tema no localStorage
+        function saveTheme(theme) {
+            localStorage.setItem('theme', theme);
+        }
+
+        // Função para carregar o tema do localStorage
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        // Função para atualizar o ícone do tema
+        function updateThemeIcon(theme) {
+            const button = document.querySelector('.theme-toggle');
+            if (theme === 'dark') {
+                button.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-sun" viewBox="0 0 16 16">
+                        <path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                        <path d="M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.414a.5.5 0 1 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707z"/>
+                    </svg>
+                `;
+            } else {
+                button.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-moon-stars" viewBox="0 0 16 16">
+                        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+                        <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
+                    </svg>
+                `;
+            }
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-bs-theme', newTheme);
+            saveTheme(newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        // Carrega o tema salvo quando a página é carregada
+        document.addEventListener('DOMContentLoaded', loadTheme);
+    </script>
+</body>
+</html> 
