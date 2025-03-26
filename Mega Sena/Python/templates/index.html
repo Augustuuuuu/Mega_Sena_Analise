@@ -274,7 +274,7 @@
             </div>
         </div>
 
-        <!-- Barra de Pesquisa com IA -->
+        <!-- Seção de Perguntas -->
         <div class="card mb-4">
             <div class="card-header">
                 <h5>Pergunte sobre a Mega Sena</h5>
@@ -283,7 +283,7 @@
                 <form id="perguntaForm" class="mb-3">
                     <div class="input-group">
                         <input type="text" class="form-control" id="perguntaInput" 
-                               placeholder="Faça sua pergunta sobre a Mega Sena..." required>
+                               placeholder="Ex: Qual a frequência do número 10? Quando foi o primeiro sorteio?" required>
                         <button type="submit" class="btn btn-primary">Perguntar</button>
                     </div>
                 </form>
@@ -296,6 +296,17 @@
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Carregando...</span>
                     </div>
+                </div>
+                <div class="mt-3">
+                    <small class="text-muted">
+                        Você pode perguntar sobre:
+                        <ul>
+                            <li>Frequência de um número específico</li>
+                            <li>Primeiro sorteio de um número específico</li>
+                            <li>Primeiro sorteio realizado</li>
+                            <li>Evolução da frequência de um número</li>
+                        </ul>
+                    </small>
                 </div>
             </div>
         </div>
@@ -409,7 +420,7 @@
                 if (data.erro) {
                     respostaTexto.textContent = data.erro;
                 } else {
-                    respostaTexto.textContent = data.resposta;
+                    respostaTexto.innerHTML = data.resposta.replace(/\n/g, '<br>');
                 }
                 respostaArea.style.display = 'block';
             })

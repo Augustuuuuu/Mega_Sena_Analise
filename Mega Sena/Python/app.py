@@ -2,20 +2,25 @@
 from flask import Flask, render_template, request, jsonify  # Flask para criar a aplicação web
 from collections import Counter  # Counter para contar frequência de números
 import re  # Expressões regulares para processamento de texto
-from ia_qa import MegaSenaQA  # Importa a classe de perguntas e respostas
+import os  # Para manipulação de caminhos de arquivo
+from qa_mega_sena import QAMegaSena  # Importa a classe de perguntas e respostas
 
 # Inicialização da aplicação Flask
 app = Flask(__name__)
 
 # Inicializa o sistema de perguntas e respostas
-qa_system = MegaSenaQA()
+qa_system = QAMegaSena()
 
 def ler_resultados():
     # Lista para armazenar todos os números lidos
     numeros = []
     total_jogos = 0
+    # Obtém o caminho absoluto do diretório atual
+    diretorio_atual = os.path.dirname(os.path.abspath(__file__))
+    # Constrói o caminho completo para o arquivo resultados.txt
+    caminho_arquivo = os.path.join(diretorio_atual, 'resultados.txt')
     # Abre o arquivo de resultados em modo leitura com codificação UTF-8
-    with open('resultados.txt', 'r', encoding='utf-8') as arquivo:
+    with open(caminho_arquivo, 'r', encoding='utf-8') as arquivo:
         # Itera sobre cada linha do arquivo
         for linha in arquivo:
             # Procura por padrões de números após um hífen
